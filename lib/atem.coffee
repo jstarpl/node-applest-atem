@@ -255,12 +255,10 @@ class ATEM
           @_merge(@state.audio.channels[channelMappings[i]], { leftLevel: leftGain/8388607, rightLevel: rightGain/8388607 })
           offset += 16
 
-      when 'MRPr'
+      when 'MRPr' # Macro Run state
         index = @_parseNumber(buffer[2..3])
-        # eventName = 'macroRun'
         if index == 0xFFFF
           index = @lastMacroIndex
-          # eventName = 'macroStop'
         else
           @lastMacroIndex = index
         @merge(@state.macros[index], {
