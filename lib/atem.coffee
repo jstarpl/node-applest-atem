@@ -254,6 +254,21 @@ class ATEM
           @_merge(@state.audio.channels[channelMappings[i]], { leftLevel: leftGain/8388607, rightLevel: rightGain/8388607 })
           offset += 16
 
+      when 'MRPr'
+        index = @_parseNumber(buffer[2..3])
+        eventName = 'macroRun'
+        if index == 0xFFFF
+          index = @lastMacroIndex
+          eventName = 'macroStop'
+        else
+          @lastMacroIndex = index
+        @event.emit eventName, null, {
+          index: index,
+          running: if buffer[0] & 0x01 == 0x01 then true else false,
+          paused: if buffer[0] & 0x02 == 0x02 then true else false,
+          looping: if buffer[1] > 1 then true else false
+        }
+
   # Convert number from bytes.
   _parseNumber: (bytes) ->
     num = 0
