@@ -61,6 +61,7 @@ class ATEM
       auxs: {}
     audio:
       channels: {}
+    macros: {}
 
   connected: false
   localPackedId: 1
@@ -256,14 +257,13 @@ class ATEM
 
       when 'MRPr'
         index = @_parseNumber(buffer[2..3])
-        eventName = 'macroRun'
+        # eventName = 'macroRun'
         if index == 0xFFFF
           index = @lastMacroIndex
-          eventName = 'macroStop'
+          # eventName = 'macroStop'
         else
           @lastMacroIndex = index
-        @event.emit eventName, null, {
-          index: index,
+        @state.macros[index] = {
           running: if buffer[0] & 0x01 == 0x01 then true else false,
           paused: if buffer[0] & 0x02 == 0x02 then true else false,
           looping: if buffer[1] > 1 then true else false
