@@ -263,11 +263,11 @@ class ATEM
           # eventName = 'macroStop'
         else
           @lastMacroIndex = index
-        @state.macros[index] = {
+        @merge(@state.macros[index], {
           running: if buffer[0] & 0x01 == 0x01 then true else false,
           paused: if buffer[0] & 0x02 == 0x02 then true else false,
           looping: if buffer[1] > 1 then true else false
-        }
+        })
 
   # Convert number from bytes.
   _parseNumber: (bytes) ->
